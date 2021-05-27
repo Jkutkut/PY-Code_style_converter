@@ -1,3 +1,4 @@
+import sys # to handle arguments
 import re # Regular expresions
 
 def jsFile2lineFile(inputFile):
@@ -46,18 +47,23 @@ def jsFile2lineFile(inputFile):
 
 
 
+if __name__ == '__main__':
+    inputFileName = "testing/input.js" # Default inputFile name
+    outputFileName = "outputFile.js" # default output file
 
-# inputFileName = "testing/input.js"
-inputFileName = "testing/stringsAndCode.js"
-outputFileName = "outputFile.js"
+    if len(sys.argv) > 1:
+        inputFileName = sys.argv[1]
+        if len(sys.argv) > 2:
+            outputFileName = sys.argv[2]
 
-inputFileString = open(inputFileName, "r").read()
-outputFile = open(outputFileName, "w")
+    inputFileString = open(inputFileName, "r").read()
+    outputFile = open(outputFileName, "w")
 
 
-output = jsFile2lineFile(inputFileString)
+    output = jsFile2lineFile(inputFileString)
 
-outputFile.write(inputFileString)
-outputFile.write("\n\n//---------------------------------------------\n\n")
-outputFile.write(output)
-outputFile.close()
+    # Debug
+    # outputFile.write(inputFileString); outputFile.write("\n\n//---------------------------------------------\n\n")
+    
+    outputFile.write(output) # Save to file
+    outputFile.close()
