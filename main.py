@@ -1,22 +1,36 @@
 import re # Regular expresions
 
+def jsFile2lineFile(inputFile):
+    outputString = "" # The file will be stored here (output)
+
+    for r in inputFile.split("\n"): # For each row
+        r = re.sub(r'^ +', '', r) # Remove initial spacing
+        r = re.sub(r'//.+', '', r) # Remove one line comments
+        outputString += r # Add it to the string
+    
+    outputString = re.sub(r'/\*\*.+\*/', '', outputString) # remove multiline comments
+
+    # Extra reduction
+    
+    charac = "\{:=!\+\-,"
+
+    outputString = re.sub(r' +([' + charac + '])', '\\1', outputString) # remove spaces
+    outputString = re.sub(r'([' + charac + ']) +', '\\1', outputString) # remove spaces
+    
+
+    return outputString
+
+
+
+
 inputFileName = "testing/input.js"
 outputFileName = "outputFile.js"
 
-inputFile = open(inputFileName, "r").read().split("\n")
+inputFileString = open(inputFileName, "r").read()
 outputFile = open(outputFileName, "w")
 
-output=""
 
-
-for i in inputFile:
-    i = re.sub(r'^ +', '', i) # Remove initial spacing
-    i = re.sub(r'//.+', '', i) # Remove one line comments
-    print(i)
-    output += i
-
-output = re.sub(r'/\*\*.+\*/', '', output)
-
+output = jsFile2lineFile(inputFileString)
 
 outputFile.write(output)
 outputFile.close()
