@@ -24,25 +24,20 @@ def jsFile2lineFile(inputFile):
             
 
         elif not onString: # Space reduce
-            comp = re.match(r'([\{:=!\+\-\*/,\}])', l) 
-            if comp != None:
+            comp = re.match(r'([\{:=!\+\-\*/,\}])', l) # If current character may have spaces on the sides
+            if comp != None: # If found, try to remove spaces from the sides
                 delta = [0, 1]
+                
                 j = -1
-                while index + j >= 0 and outputString[index + j] == " ":
-                    # l = outputString[index + j] + l
+                while index + j >= 0 and outputString[index + j] == " ": # spaces behind
                     delta[0] -= 1
                     j -= 1
-                    # print("1")
                 j = 1
-                while index + j < len(outputString) and outputString[index + j] == " ":
-                    # l = l + outputString[index + j]
+                while index + j < len(outputString) and outputString[index + j] == " ": # spaces foward
                     delta[1] += 1
                     j += 1
-                    # print("2")
-                
-                print("'" + outputString[index + delta[0]: index + delta[1]] + "'")
-                outputString = outputString[:index + delta[0]] + l + outputString[index + delta[1]:]
-                index = index + delta[0] - delta[1] + 1
+                outputString = outputString[:index + delta[0]] + l + outputString[index + delta[1]:] # remove spaces
+                index = index + delta[0] - delta[1] + 1 # update index
 
         index = index + 1
     
