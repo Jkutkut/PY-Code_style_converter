@@ -5,6 +5,7 @@ let obj1ArR = [input1, input2];
 
 function mergerFunction(text) {
     let result = text.join("");
+    return result;
 }
 
 console.log(mergerFunction(obj1ArR));
