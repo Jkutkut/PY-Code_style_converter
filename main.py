@@ -152,12 +152,19 @@ class JS_conversor:
         return
 
 def randomNameGenerator(type="minus"):
-    offset = 0 if type == "MAYUS" else 32
+    '''
+    Allows to create a generator of all possible combinations of words made with characters only (a, b... z, aa ... az ...).
+    
+    type (str) optional argument that allows to generate MAYUS or minus words ("MAYUS" or other for minus).
+    '''
+    offset = (0 if type == "MAYUS" else 32)
+    offset += 65 # On ASCII, the fist character starts on this position
+    
     current = 0
     nextOrder = randomNameGenerator(type)
     currentResult = ""
     while True:
-        yield currentResult + chr(65 + current + offset)
+        yield currentResult + chr(current + offset)
         if current == 25:
             currentResult = nextOrder.__next__()
             current = 0
