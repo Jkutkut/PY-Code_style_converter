@@ -49,6 +49,7 @@ def lineFile2jsFile(inputFile):
     outputString = inputFile # The file will be stored here (output)
 
     onString = False
+    onParenthesis = 0
     index = -1 # Index of the current character
     spacing = "" # space on the left (indexing)
     while index < len(outputString) - 1:
@@ -89,10 +90,13 @@ def lineFile2jsFile(inputFile):
                     suffix = "\n" + spacing
             
             elif re.match(r'[;,]', l):
-                suffix = "\n" + spacing
+                if onParenthesis == 0:
+                    suffix = "\n" + spacing
+                else:
+                    suffix = " "
             
             elif re.match(r'[=\+\-\*/]', l):
-                if re.match(r'[^ =\+\-\*/]', prevChar) and prevChar != "\t":
+                if re.match(r'[^ =\+\-\*/!]', prevChar) and prevChar != "\t":
                     prefix = " "
                 if re.match(r'[^ =\+\-\*/]', nextChar):
                     suffix = " "
@@ -100,6 +104,14 @@ def lineFile2jsFile(inputFile):
             elif re.match(r'[:]', l):
                 if nextChar != " ":
                     suffix = " "
+            elif l == "(":
+                onParenthesis += 1
+            elif l == ")":
+                onParenthesis -= 1
+
+            elif re.match(r'[a-z]', l) and prevChar == "}":
+                print(outputString[index - 1: index + 2])
+                prefix = "\n" + spacing
             else:
                 continue
             # print("-----------")
@@ -115,7 +127,8 @@ def lineFile2jsFile(inputFile):
     
 
 if __name__ == '__main__':
-    inputFileName = "testing/oneLine/smallOneLine.js" # Default inputFile name
+    # inputFileName = "testing/oneLine/smallOneLine.js" # Default inputFile name
+    inputFileName = "testing/oneLine/inputOneLine.js" # Default inputFile name
     outputFileName = "outputFile.js" # default output file
 
     if len(sys.argv) > 1:
