@@ -1,6 +1,8 @@
 import sys # to handle arguments
 import re # Regular expresions
 
+intro = "/**\n * Code generated using Code style converter.\n * @author Jkutkut\n * @see https://github.com/Jkutkut/PY_Code-style-converter\n */\n"
+
 def jsFile2lineFile(inputFile):
     outputString = "" # The file will be stored here (output)
 
@@ -109,12 +111,11 @@ def lineFile2jsFile(inputFile):
                 onParenthesis -= 1
 
             elif re.match(r'[a-z]', l) and prevChar == "}":
-                print(outputString[index - 1: index + 2])
                 prefix = "\n" + spacing
             else:
                 continue
 
-            
+
             outputString = outputString[:index + reduceText] + prefix + l + suffix + outputString[index + 1:]
             index = index + len(prefix) + len(suffix) + reduceText
 
@@ -142,5 +143,5 @@ if __name__ == '__main__':
     # Debug
     # outputFile.write(inputFileString); outputFile.write("\n\n//---------------------------------------------\n\n")
     
-    outputFile.write(output) # Save to file
+    outputFile.write(intro + output) # Save to file
     outputFile.close()
