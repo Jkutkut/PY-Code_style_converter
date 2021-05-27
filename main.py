@@ -45,10 +45,70 @@ def jsFile2lineFile(inputFile):
 
     return outputString
 
+def lineFile2jsFile(inputFile):
+    outputString = inputFile # The file will be stored here (output)
 
+    onString = False
+    index = -1 # Index of the current character
+    spacing = "" # space on the left (indexing)
+    while index < len(outputString) - 1:
+        index += 1
+        l = outputString[index]
+        
+        if l == "\"" or l == "'":
+            prev = outputString[index - 1]
+            if prev != "\\":
+                onString = not onString
+
+        # print(str(index) + " -> " + str(len(outputString)))
+
+        if not onString:
+            prefix = ""; suffix = ""
+            prevChar = outputString[index - 1]
+            nextChar = outputString[index + 1] if index + 1 < len(outputString) else None
+
+
+            if re.match(r'[\{\[]', l):
+                spacing += "\t"
+
+                if prevChar != " " and prevChar != "\t":
+                    prefix = " "
+                
+                suffix = "\n" + spacing
+
+            elif re.match(r'[\}\]]', l):
+                spacing = spacing[:-1]
+                prefix = "\n" + spacing
+                if len(spacing) == 0 and nextChar != ";":
+                    suffix = "\n" + spacing
+            
+            elif re.match(r'[;,]', l):
+                suffix = "\n" + spacing
+            
+            elif re.match(r'[=\+\-\*/]', l):
+                if re.match(r'[^ =\+\-\*/]', prevChar) and prevChar != "\t":
+                    prefix = " "
+                if re.match(r'[^ =\+\-\*/]', nextChar):
+                    suffix = " "
+            elif re.match(r'[:]', l):
+                if nextChar != " ":
+                    suffix = " "
+            else:
+                continue
+            # print("-----------")
+            # print(outputString[:index])
+            # print(l)
+            # print(outputString[index + 1:])
+            # print("-----------")
+            outputString = outputString[:index] + prefix + l + suffix + outputString[index + 1:]
+            index = index + len(prefix) + len(suffix)
+
+
+    return outputString
+    
 
 if __name__ == '__main__':
-    inputFileName = "testing/input.js" # Default inputFile name
+    inputFileName = "testing/oneLine/smallOneLine.js" # Default inputFile name
     outputFileName = "outputFile.js" # default output file
 
     if len(sys.argv) > 1:
@@ -60,7 +120,8 @@ if __name__ == '__main__':
     outputFile = open(outputFileName, "w")
 
 
-    output = jsFile2lineFile(inputFileString)
+    # output = jsFile2lineFile(inputFileString)
+    output = lineFile2jsFile(inputFileString)
 
     # Debug
     # outputFile.write(inputFileString); outputFile.write("\n\n//---------------------------------------------\n\n")
