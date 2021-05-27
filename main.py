@@ -151,8 +151,8 @@ class JS_conversor:
 
         return
 
-def randomNameGenerator(type):
-    offset = 0 if type == "Class" or type == "const" else 32
+def randomNameGenerator(type="minus"):
+    offset = 0 if type == "MAYUS" else 32
     current = 0
     nextOrder = randomNameGenerator(type)
     currentResult = ""
