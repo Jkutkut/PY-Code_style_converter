@@ -157,6 +157,7 @@ def randomNameGenerator(type="minus"):
     
     type (str) optional argument that allows to generate MAYUS or minus words ("MAYUS" or other for minus).
     '''
+    
     offset = (0 if type == "MAYUS" else 32)
     offset += 65 # On ASCII, the fist character starts on this position
     
