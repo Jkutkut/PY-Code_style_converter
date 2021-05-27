@@ -3,10 +3,10 @@ import re
 from typing import ClassVar # Regular expresions
 
 class JS_conversor:
-    intro = "/**\n * Code generated using Code style converter.\n * @author Jkutkut\n * @see https://github.com/Jkutkut/PY_Code-style-converter\n */\n"
+    intro = "/**\n * Code generated using Code style converter.\n * @author Jkutkut\n * @see https://github.com/Jkutkut/PY_Code-style-converter\n */\n\n"
 
     @classmethod
-    def jsFile2lineFile(cls, inputFile):
+    def normal2line(cls, inputFile):
         outputString = "" # The file will be stored here (output)
 
         for r in inputFile.split("\n"): # For each row
@@ -46,11 +46,10 @@ class JS_conversor:
 
             index = index + 1
         
-
         return cls.prettier(outputString)
 
     @classmethod
-    def lineFile2jsFile(cls, inputFile):
+    def line2normal(cls, inputFile):
         outputString = inputFile # The file will be stored here (output)
 
         onString = False
@@ -121,7 +120,8 @@ class JS_conversor:
                 outputString = outputString[:index + reduceText] + prefix + l + suffix + outputString[index + 1:]
                 index = index + len(prefix) + len(suffix) + reduceText
 
-
+        while outputString[0] == "\n":
+            outputString = outputString[1:]
         return cls.prettier(outputString)
     
     @classmethod
@@ -129,7 +129,7 @@ class JS_conversor:
         return cls.intro + file
 
 if __name__ == '__main__':
-    inputFileName = "testing/oneLine/smallTest_OneLine.js" # Default inputFile name
+    inputFileName = "testing/oneLine/normalTest_OneLine.js" # Default inputFile name
     outputFileName = "outputFile.js" # default output file
 
     if len(sys.argv) > 1:
@@ -142,7 +142,7 @@ if __name__ == '__main__':
 
 
     # output = jsFile2lineFile(inputFileString)
-    output = JS_conversor().lineFile2jsFile(inputFileString)
+    output = JS_conversor().line2normal(inputFileString)
 
     # Debug
     # outputFile.write(inputFileString); outputFile.write("\n\n//---------------------------------------------\n\n")
