@@ -61,7 +61,6 @@ def lineFile2jsFile(inputFile):
             if prev != "\\":
                 onString = not onString
 
-        # print(str(index) + " -> " + str(len(outputString)))
 
         if not onString:
             prefix = ""; suffix = ""
@@ -114,11 +113,8 @@ def lineFile2jsFile(inputFile):
                 prefix = "\n" + spacing
             else:
                 continue
-            # print("-----------")
-            # print(outputString[:index])
-            # print(l)
-            # print(outputString[index + 1:])
-            # print("-----------")
+
+            
             outputString = outputString[:index + reduceText] + prefix + l + suffix + outputString[index + 1:]
             index = index + len(prefix) + len(suffix) + reduceText
 
