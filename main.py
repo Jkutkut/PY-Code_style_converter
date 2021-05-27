@@ -134,6 +134,10 @@ class JS_conversor:
         outputFileName = re.sub(r'([a-zA-Z0-9\)]) *\n\t*{', '\\1 {', inputFile) # Place brackets the normal way
         return outputFileName
 
+    @classmethod
+    def classic2line(cls, inputFile):
+        return cls.normal2line(cls.classic2normal(inputFile))
+
 
     @classmethod
     def prettier(cls, file):
