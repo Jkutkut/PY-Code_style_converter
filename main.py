@@ -142,9 +142,32 @@ class JS_conversor:
     def prettier(cls, file):
         return cls.intro + file
 
+    @classmethod
+    def encry(cls, inputFile):
+        lines = inputFile.split("\n")
+        for l in lines:
+            if re.match(r'\t*(let|var|const) ([a-zA-Z0-9_]+)', ''):
+                pass
+
+        return
+
+def randomNameGenerator(type):
+    offset = 0 if type == "Class" or type == "const" else 32
+    current = 0
+    nextOrder = randomNameGenerator(type)
+    currentResult = ""
+    while True:
+        yield currentResult + chr(65 + current + offset)
+        if current == 25:
+            currentResult = nextOrder.__next__()
+            current = 0
+        current += 1
+    
 
 
 if __name__ == '__main__':
+    # inputFileName = "testing/oneLine/normalTest_OneLine.js" # Default inputFile name
+    # inputFileName = "testing/oneLine/smallTest_OneLine.js" # Default inputFile name
     inputFileName = "testing/classic/normalTest_Classic.js" # Default inputFile name
     outputFileName = "outputFile.js" # default output file
 
@@ -156,7 +179,15 @@ if __name__ == '__main__':
     inputFileString = open(inputFileName, "r").read()
     outputFile = open(outputFileName, "w")
 
-    output = JS_conversor().classic2normal(inputFileString)
+
+    # output = normal2line(inputFileString)
+    # output = JS_conversor().line2normal(inputFileString)
+    # output = JS_conversor().line2classic(inputFileString)
+    # output = JS_conversor().classic2normal(inputFileString)
+    output = JS_conversor().encry(inputFileString)
+
+    # Debug
+    # outputFile.write(inputFileString); outputFile.write("\n\n//---------------------------------------------\n\n")
     
     outputFile.write(output) # Save to file
     outputFile.close()
