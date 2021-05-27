@@ -138,14 +138,13 @@ class JS_conversor:
     def classic2line(cls, inputFile):
         return cls.normal2line(cls.classic2normal(inputFile))
 
-
     @classmethod
     def prettier(cls, file):
         return cls.intro + file
 
+
+
 if __name__ == '__main__':
-    # inputFileName = "testing/oneLine/normalTest_OneLine.js" # Default inputFile name
-    # inputFileName = "testing/oneLine/smallTest_OneLine.js" # Default inputFile name
     inputFileName = "testing/classic/normalTest_Classic.js" # Default inputFile name
     outputFileName = "outputFile.js" # default output file
 
@@ -157,14 +156,7 @@ if __name__ == '__main__':
     inputFileString = open(inputFileName, "r").read()
     outputFile = open(outputFileName, "w")
 
-
-    # output = normal2line(inputFileString)
-    # output = JS_conversor().line2normal(inputFileString)
-    # output = JS_conversor().line2classic(inputFileString)
     output = JS_conversor().classic2normal(inputFileString)
-
-    # Debug
-    # outputFile.write(inputFileString); outputFile.write("\n\n//---------------------------------------------\n\n")
     
     outputFile.write(output) # Save to file
     outputFile.close()
