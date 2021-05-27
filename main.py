@@ -1,6 +1,5 @@
 import sys # to handle arguments
-import re
-from typing import ClassVar # Regular expresions
+import re # Regular expresions
 
 class JS_conversor:
     intro = "/**\n * Code generated using Code style converter.\n * @author Jkutkut\n * @see https://github.com/Jkutkut/PY_Code-style-converter\n */\n\n"
@@ -141,7 +140,7 @@ if __name__ == '__main__':
     outputFile = open(outputFileName, "w")
 
 
-    # output = jsFile2lineFile(inputFileString)
+    # output = normal2line(inputFileString)
     output = JS_conversor().line2normal(inputFileString)
 
     # Debug
