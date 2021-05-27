@@ -130,11 +130,19 @@ class JS_conversor:
         return outputFileName
 
     @classmethod
+    def classic2normal(cls, inputFile):
+        outputFileName = re.sub(r'([a-zA-Z0-9\)]) *\n\t*{', '\\1 {', inputFile) # Place brackets the normal way
+        return outputFileName
+
+
+    @classmethod
     def prettier(cls, file):
         return cls.intro + file
 
 if __name__ == '__main__':
-    inputFileName = "testing/oneLine/normalTest_OneLine.js" # Default inputFile name
+    # inputFileName = "testing/oneLine/normalTest_OneLine.js" # Default inputFile name
+    # inputFileName = "testing/oneLine/smallTest_OneLine.js" # Default inputFile name
+    inputFileName = "testing/classic/normalTest_Classic.js" # Default inputFile name
     outputFileName = "outputFile.js" # default output file
 
     if len(sys.argv) > 1:
@@ -148,7 +156,8 @@ if __name__ == '__main__':
 
     # output = normal2line(inputFileString)
     # output = JS_conversor().line2normal(inputFileString)
-    output = JS_conversor().line2classic(inputFileString)
+    # output = JS_conversor().line2classic(inputFileString)
+    output = JS_conversor().classic2normal(inputFileString)
 
     # Debug
     # outputFile.write(inputFileString); outputFile.write("\n\n//---------------------------------------------\n\n")
