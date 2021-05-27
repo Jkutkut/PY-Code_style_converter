@@ -127,7 +127,7 @@ class JS_conversor:
     def line2classic(cls, inputFile):
         outputFileName = cls.line2normal(inputFile)
         # outputFileName = re.sub(r'(\t*)(.+\(.*\)) \{\n', '\\1\\2\n\\1{\n', outputFileName) # Place brackets the classic way
-        outputFileName = re.sub(r'(\t*)(.+\(.*\)) \{\n', '\\1\\2\n\\1{\n', outputFileName) # Place brackets the classic way
+        outputFileName = re.sub(r'(\t*)(.+[a-zA-Z0-9\)]) \{\n', '\\1\\2\n\\1{\n', outputFileName) # Place brackets the classic way
         return outputFileName
 
     @classmethod
