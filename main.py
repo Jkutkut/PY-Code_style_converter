@@ -66,6 +66,7 @@ def lineFile2jsFile(inputFile):
             prefix = ""; suffix = ""
             prevChar = outputString[index - 1]
             nextChar = outputString[index + 1] if index + 1 < len(outputString) else None
+            reduceText = 0
 
 
             if re.match(r'[\{\[]', l):
@@ -78,7 +79,12 @@ def lineFile2jsFile(inputFile):
 
             elif re.match(r'[\}\]]', l):
                 spacing = spacing[:-1]
-                prefix = "\n" + spacing
+                
+                if prevChar == "\t":
+                    reduceText -= 1
+                else:
+                    prefix = "\n" + spacing
+                
                 if len(spacing) == 0 and nextChar != ";":
                     suffix = "\n" + spacing
             
@@ -90,6 +96,7 @@ def lineFile2jsFile(inputFile):
                     prefix = " "
                 if re.match(r'[^ =\+\-\*/]', nextChar):
                     suffix = " "
+
             elif re.match(r'[:]', l):
                 if nextChar != " ":
                     suffix = " "
@@ -100,8 +107,8 @@ def lineFile2jsFile(inputFile):
             # print(l)
             # print(outputString[index + 1:])
             # print("-----------")
-            outputString = outputString[:index] + prefix + l + suffix + outputString[index + 1:]
-            index = index + len(prefix) + len(suffix)
+            outputString = outputString[:index + reduceText] + prefix + l + suffix + outputString[index + 1:]
+            index = index + len(prefix) + len(suffix) + reduceText
 
 
     return outputString
