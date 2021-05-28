@@ -10,3 +10,43 @@ function mergerFunction(text) {
 
 console.log(mergerFunction(obj1ArR));
 
+class Car {
+
+    static COLORS = {
+        RED: "red",
+        GREEN: "green",
+        BLUE: "blue",
+    }
+
+    constructor (id, color) {
+        this.id = id;
+
+        this.color = color;
+    }
+
+    get id() {
+        return this._id;
+    }
+
+    set id (id) {
+        this._id = id;
+    }
+
+    get color() {
+        return this._color;
+    }
+
+    set color (color) {
+        this._color = color;
+    }
+
+    printCar() {
+        return "The car " + this.id + " has a color = " + this.color;
+    }
+}
+
+var car1 = new Car(001, Car.COLORS.RED);
+var car2 = new Car(002, Car.COLORS.BLUE);
+var car3 = new Car(003, Car.COLORS.GREEN);
+
+var carArray = [car1, car2, car3];
