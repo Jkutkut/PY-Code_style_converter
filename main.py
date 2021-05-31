@@ -142,14 +142,14 @@ class JS_conversor:
     def prettier(cls, file):
         return cls.intro + file
 
-    @classmethod
-    def encry(cls, inputFile):
-        lines = inputFile.split("\n")
-        for l in lines:
-            if re.match(r'\t*(let|var|const) ([a-zA-Z0-9_]+)', ''):
-                pass
+    # @classmethod
+    # def encry(cls, inputFile):
+    #     lines = inputFile.split("\n")
+    #     for l in lines:
+    #         if re.match(r'\t*(let|var|const) ([a-zA-Z0-9_]+)', ''):
+    #             pass
 
-        return
+    #     return
 
 def randomNameGenerator(type="minus"):
     '''
