@@ -7,13 +7,13 @@ class JS_conversor:
     @classmethod
     def normal2line(cls, inputFile):
         outputString = "" # The file will be stored here (output)
-
+        print(inputFile)
         for r in inputFile.split("\n"): # For each row
             r = re.sub(r'^ +', '', r) # Remove initial spacing
             r = re.sub(r'//.+', '', r) # Remove one line comments
             outputString += r # Add it to the string
         
-        outputString = re.sub(r'/\*\*.+\*/', '', outputString) # remove multiline comments
+        outputString = re.sub(r'/\*.*?\*/', '', outputString) # remove multiline comments
 
         # Extra reduction
         onString = False
@@ -44,7 +44,7 @@ class JS_conversor:
                     index = index + delta[0] - delta[1] + 1 # update index
 
             index = index + 1
-        
+        print(outputString)
         return cls.prettier(outputString)
 
     @classmethod
@@ -188,11 +188,11 @@ if __name__ == '__main__':
     outputFile = open(outputFileName, "w")
 
 
-    # output = normal2line(inputFileString)
+    output = JS_conversor().normal2line(inputFileString)
     # output = JS_conversor().line2normal(inputFileString)
     # output = JS_conversor().line2classic(inputFileString)
     # output = JS_conversor().classic2normal(inputFileString)
-    output = JS_conversor().encry(inputFileString)
+    # output = JS_conversor().encry(inputFileString)
 
     # Debug
     # outputFile.write(inputFileString); outputFile.write("\n\n//---------------------------------------------\n\n")
