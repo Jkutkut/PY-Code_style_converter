@@ -7,7 +7,6 @@ class JS_conversor:
     @classmethod
     def normal2line(cls, inputFile):
         outputString = "" # The file will be stored here (output)
-        print(inputFile)
         for r in inputFile.split("\n"): # For each row
             r = re.sub(r'^ +', '', r) # Remove initial spacing
             r = re.sub(r'//.+', '', r) # Remove one line comments
@@ -44,7 +43,6 @@ class JS_conversor:
                     index = index + delta[0] - delta[1] + 1 # update index
 
             index = index + 1
-        print(outputString)
         return cls.prettier(outputString)
 
     @classmethod
