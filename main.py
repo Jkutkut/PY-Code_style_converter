@@ -185,7 +185,7 @@ class HTML_converter:
             r = re.sub(r'^ +', '', r) # Remove initial spacing
             outputString += r # Add it to the string
 
-        # outputString = re.sub(r'', '', outputString) # Remove comments
+        outputString = re.sub(r'<!--.+?-->', '', outputString) # Remove comments
         return cls.prettier(outputString)
 
 
