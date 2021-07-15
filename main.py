@@ -171,9 +171,28 @@ def randomNameGenerator(type="minus"):
     
 
 
+class HTML_converter:
+    intro = "<!-- HTML generated using Code style converter.\n     @author Jkutkut\n     @see https://github.com/Jkutkut/PY_Code-style-converter -->\n\n"
+
+    @classmethod
+    def prettier(cls, file):
+        return cls.intro + file
+
+    @classmethod
+    def normal2line(cls, inputFile):
+        outputString = ""
+        for r in inputFile.split("\n"): # For each row
+            r = re.sub(r'^ +', '', r) # Remove initial spacing
+            outputString += r # Add it to the string
+
+        # outputString = re.sub(r'', '', outputString) # Remove comments
+        return cls.prettier(outputString)
+
+
 if __name__ == '__main__':
-    inputFileName = "testing/classic/normalTest_Classic.js" # Default inputFile name
-    outputFileName = "outputFile.js" # default output file
+    inputFileName = "testing/HTML/input/desktop.html" # Default inputFile name
+    outputFileName = "testing/HTML/input/outputFile.html" # default output file
+    # outputFileName = "outputFile.js" # default output file
 
     if len(sys.argv) > 1:
         inputFileName = sys.argv[1]
