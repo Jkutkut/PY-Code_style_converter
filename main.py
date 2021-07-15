@@ -1,7 +1,7 @@
 import sys # to handle arguments
 import re # Regular expresions
 
-class JS_conversor:
+class JS_converter:
     intro = "/**\n * Code generated using Code style converter.\n * @author Jkutkut\n * @see https://github.com/Jkutkut/PY_Code-style-converter\n */\n\n"
 
     @classmethod
@@ -174,6 +174,7 @@ def randomNameGenerator(type="minus"):
 if __name__ == '__main__':
     # inputFileName = "testing/oneLine/normalTest_OneLine.js" # Default inputFile name
     # inputFileName = "testing/oneLine/smallTest_OneLine.js" # Default inputFile name
+    # inputFileName = "testing/classic/normalTest_Classic.js" # Default inputFile name
     inputFileName = "testing/classic/normalTest_Classic.js" # Default inputFile name
     outputFileName = "outputFile.js" # default output file
 
@@ -186,11 +187,11 @@ if __name__ == '__main__':
     outputFile = open(outputFileName, "w")
 
 
-    output = JS_conversor().normal2line(inputFileString)
-    # output = JS_conversor().line2normal(inputFileString)
-    # output = JS_conversor().line2classic(inputFileString)
-    # output = JS_conversor().classic2normal(inputFileString)
-    # output = JS_conversor().encry(inputFileString)
+    # output = JS_converter().normal2line(inputFileString)
+    # output = JS_converter().line2normal(inputFileString)
+    # output = JS_converter().line2classic(inputFileString)
+    # output = JS_converter().classic2normal(inputFileString)
+    # output = JS_converter().encry(inputFileString)
 
     # Debug
     # outputFile.write(inputFileString); outputFile.write("\n\n//---------------------------------------------\n\n")
