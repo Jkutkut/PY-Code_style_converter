@@ -172,9 +172,6 @@ def randomNameGenerator(type="minus"):
 
 
 if __name__ == '__main__':
-    # inputFileName = "testing/oneLine/normalTest_OneLine.js" # Default inputFile name
-    # inputFileName = "testing/oneLine/smallTest_OneLine.js" # Default inputFile name
-    # inputFileName = "testing/classic/normalTest_Classic.js" # Default inputFile name
     inputFileName = "testing/classic/normalTest_Classic.js" # Default inputFile name
     outputFileName = "outputFile.js" # default output file
 
@@ -192,6 +189,8 @@ if __name__ == '__main__':
     # output = JS_converter().line2classic(inputFileString)
     # output = JS_converter().classic2normal(inputFileString)
     # output = JS_converter().encry(inputFileString)
+
+    output = HTML_converter().normal2line(inputFileString)
 
     # Debug
     # outputFile.write(inputFileString); outputFile.write("\n\n//---------------------------------------------\n\n")
