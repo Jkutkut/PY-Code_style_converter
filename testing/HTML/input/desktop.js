@@ -48,9 +48,9 @@ window.onload = function() {
     $("#LeftBtn").click(()=>{vote(1);});
     $("#RightBtn").click(()=>{vote(-1);});
 
-    $(".torch").attr("src", "../../Res/img/torch.png");
-    $(".gun").attr("src", "../../Res/img/guns/007-gun.png");
-    $(".playerIcon").attr("src", "../../Res/img/users/user13.png");
+    // $(".torch").attr("src", "../../Res/img/torch.png");
+    // $(".gun").attr("src", "../../Res/img/guns/007-gun.png");
+    // $(".playerIcon").attr("src", "../../Res/img/users/user13.png");
     // update();
 
     //Update periodically the following functions
