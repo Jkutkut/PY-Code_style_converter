@@ -1,7 +1,36 @@
 import sys # to handle arguments
 import re # Regular expresions
 
-class JS_converter:
+class Converter:
+    intro = ""
+
+    @classmethod
+    def randomNameGenerator(cls, type="minus"):
+        '''
+        Allows to create a generator of all possible combinations of words made with characters only (a, b... z, aa ... az ...).
+        
+        type (str) optional argument that allows to generate MAYUS or minus words ("MAYUS" or other for minus).
+        '''
+        
+        offset = (0 if type == "MAYUS" else 32)
+        offset += 65 # On ASCII, the fist character starts on this position
+        
+        current = 0
+        nextOrder = cls.randomNameGenerator(type)
+        currentResult = ""
+        while True:
+            yield currentResult + chr(current + offset)
+            if current == 25:
+                currentResult = nextOrder.__next__()
+                current = 0
+            current += 1
+
+    @classmethod
+    def prettier(cls, file):
+        '''Adds the introduction to the file'''
+        return cls.intro + file
+
+class JS_converter(Converter):
     intro = "/**\n * Code generated using Code style converter.\n * @author Jkutkut\n * @see https://github.com/Jkutkut/PY_Code-style-converter\n */\n\n"
 
     @classmethod
@@ -136,10 +165,6 @@ class JS_converter:
     def classic2line(cls, inputFile):
         return cls.normal2line(cls.classic2normal(inputFile))
 
-    @classmethod
-    def prettier(cls, file):
-        return cls.intro + file
-
     # @classmethod
     # def encry(cls, inputFile):
     #     lines = inputFile.split("\n")
@@ -148,30 +173,10 @@ class JS_converter:
     #             pass
 
     #     return
-
-def randomNameGenerator(type="minus"):
-    '''
-    Allows to create a generator of all possible combinations of words made with characters only (a, b... z, aa ... az ...).
-    
-    type (str) optional argument that allows to generate MAYUS or minus words ("MAYUS" or other for minus).
-    '''
-    
-    offset = (0 if type == "MAYUS" else 32)
-    offset += 65 # On ASCII, the fist character starts on this position
-    
-    current = 0
-    nextOrder = randomNameGenerator(type)
-    currentResult = ""
-    while True:
-        yield currentResult + chr(current + offset)
-        if current == 25:
-            currentResult = nextOrder.__next__()
-            current = 0
-        current += 1
     
 
 
-class HTML_converter:
+class HTML_converter(Converter):
     intro = "<!-- HTML generated using Code style converter.\n     @author Jkutkut\n     @see https://github.com/Jkutkut/PY_Code-style-converter -->\n\n"
 
     @classmethod
