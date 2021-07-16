@@ -197,7 +197,7 @@ class HTML_converter(Converter):
         # fDir = re.sub(r'[^\/]+$', )
 
         for r in inputFile.split("\n"): # For each row
-            if localFiles or remoteFiles:
+            if localFiles or remoteFiles: # If the script is going to replace JS or CSS links with the code
                 lineRegex = re.match(r' *<script .*?src="(.+?)"><\/script>', r) # See if JS file found
                 if lineRegex == None: # If JS file not found
                     lineRegex = re.match(r' *<link .*?href="(.+?)">', r) # See if CSS file found
