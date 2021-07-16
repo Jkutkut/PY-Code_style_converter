@@ -181,18 +181,29 @@ class HTML_converter:
     @classmethod
     def normal2line(cls, inputFile, localFiles=True, remoteFiles=False):
         outputString = ""
-        for r in inputFile.split("\n"): # For each row
-            lineRegex = re.match(r' *<script .*?src="(.+?)"><\/script>', r) # See if JS file found
-            if lineRegex == None: # If JS file not found
-                lineRegex = re.match(r' *<link .*?href="(.+?)">', r) # See if CSS file found
-            if lineRegex != None:
-                src = lineRegex.group(1) # src link of the file
+        # fDir = re.sub(r'[^\/]+$', )
 
-                if remoteFiles and re.match(r'http.+', src):
-                    # Keep in mind that all files without http begining will not be detected!
-                    print(f"remote file found: {src}")
-                elif localFiles:
-                    print(f"local file found: {src}")
+        for r in inputFile.split("\n"): # For each row
+            if localFiles or remoteFiles:
+                lineRegex = re.match(r' *<script .*?src="(.+?)"><\/script>', r) # See if JS file found
+                if lineRegex == None: # If JS file not found
+                    lineRegex = re.match(r' *<link .*?href="(.+?)">', r) # See if CSS file found
+                if lineRegex != None:
+                    src = lineRegex.group(1) # src link of the file
+
+                    if remoteFiles and re.match(r'http.+', src):
+                        # Keep in mind that all files without http begining will not be detected!
+                        print(f"remote file found: {src}")
+                    elif localFiles:
+                        print(f"local file found: {src}")
+                        try:
+                            f = open(src, "r")
+                            print(f)
+                            pass
+                        except Exception:
+                            print("  -> not able to load the file")
+                            pass
+
 
             r = re.sub(r'^ +', '', r) # Remove initial spacing
             outputString += r # Add it to the string
