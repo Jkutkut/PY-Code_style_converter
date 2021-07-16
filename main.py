@@ -2,6 +2,10 @@ import sys # to handle arguments
 import re # Regular expresions
 
 class Converter:
+    '''
+    Prototype class to change style of files.
+    '''
+
     intro = ""
 
     @classmethod
@@ -30,7 +34,12 @@ class Converter:
         '''Adds the introduction to the file'''
         return cls.intro + file
 
+
 class JS_converter(Converter):
+    '''
+    Class to change style of JS files.
+    '''
+
     intro = "/**\n * Code generated using Code style converter.\n * @author Jkutkut\n * @see https://github.com/Jkutkut/PY_Code-style-converter\n */\n\n"
 
     @classmethod
@@ -175,13 +184,12 @@ class JS_converter(Converter):
     #     return
     
 
-
 class HTML_converter(Converter):
-    intro = "<!-- HTML generated using Code style converter.\n     @author Jkutkut\n     @see https://github.com/Jkutkut/PY_Code-style-converter -->\n\n"
+    '''
+    Class to change style of HTML files.
+    '''
 
-    @classmethod
-    def prettier(cls, file):
-        return cls.intro + file
+    intro = "<!-- HTML generated using Code style converter.\n     @author Jkutkut\n     @see https://github.com/Jkutkut/PY_Code-style-converter -->\n\n"
 
     @classmethod
     def normal2line(cls, inputFile, localFiles=True, remoteFiles=False):
