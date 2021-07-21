@@ -24,17 +24,19 @@ class Converter:
             self.dir = "./"
             self.fileName = self.fullFile
         
-        print(f'New file loaded:\n - Dir:  {self.dir}\n - Name: {self.fileName}\n')
+        print(f'File loaded:\n - Dir:  {self.dir}\n - Name: {self.fileName}\n')
         
         # Get file content
         self.file = open(self.fullFile, "r").read()
     
     def convert(self, function, outputFileName="outputFile.txt", **kwargs):
+        print(f"---------------\nStarting conversion {function.__name__} of the file.\n")
         if self.fullFile == self.dir + outputFileName:
             raise Exception("The script is not intended to overwrite the inputFile")
         
         output = function(content=self.file, **kwargs)
         self.write2file(fileName=outputFileName, content=output)
+        print("\nConversion done\n---------------")
 
 
 
@@ -245,13 +247,15 @@ class HTML_converter(Converter):
                 if lineRegex != None:
                     src = lineRegex.group(1) # src link of the file
 
-                    if not re.match(r'.+\.min\.[^\/\.]+', src): continue # If file is not a .min.EXTENSION file, skip this step (seems not to be a one-line file)
+                    if not re.match(r'.+\.min\.[^\/\.]+', src): # If file is not a .min.EXTENSION file, skip this step (seems not to be a one-line file)
+                        print(f"File found: {src}\nIf you want this file to also be added, link the .min file instead.\n")
+                        continue
 
                     extension = re.search(r'(?<=\.)[^.]+$', src).group() # Get extension of the file
 
                     if re.match(r'http.+', src) != None:
                         # Keep in mind that all files without http begining will not be detected!
-                        print(f"Remote file found: {src}.\nIf you want the file to be replaced, download the file and make it local.\n")
+                        print(f"Remote file found: {src}\nIf you want the file to be replaced, download the file and make it local.\n")
                     else:
                         print(f"Local file found: {src}")
                         
@@ -273,7 +277,7 @@ class HTML_converter(Converter):
                             r = f"<script>{content}</script>"
                         else:
                             raise Exception(f"Extension '{extension}' not found for the file '{src}'.")
-                        print("\n")
+                        print(f" - File inserted as {extension} link.\n")
                         
 
 
