@@ -275,25 +275,29 @@ class HTML_converter(Converter):
         return outputString
 
 
-if __name__ == '__main__': # If executing directly this script, use the normal2line function
+if __name__ == '__main__':
+    '''
+    If executing directly this script, use the normal2line function with the given file
+    '''
+
     inputFileName = "testing/HTML/input/desktop.html" # Default inputFile name
     outputFileName = "../outputFileName.html" # default output file
 
-    if len(sys.argv) > 1:
+    if len(sys.argv) > 1: # If more than 1 argument -> 1º is inputFileName
         inputFileName = sys.argv[1]
         if len(sys.argv) > 2:
-            outputFileName = sys.argv[2]
+            outputFileName = sys.argv[2] # If more than 2 arguments -> 2º is outputFileName
     
     try:
-        extension = re.search(r'(?<=\.)[^.]+$', inputFileName).group()
+        extension = re.search(r'(?<=\.)[^.]+$', inputFileName).group() # Extension of the file
 
         if extension == "html":
             c = HTML_converter
         elif extension == "JS" or extension == "CSS":
             c = JS_converter
         
-        conversor = c(inputFileName)
-        conversor.convert(conversor.normal2line, outputFileName=outputFileName)
+        conversor = c(inputFileName) # Create converter
+        conversor.convert(conversor.normal2line, outputFileName=outputFileName) # Convert the file to the new file
 
     except Exception:
         print("The name of the file is not valid")
