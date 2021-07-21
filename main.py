@@ -29,8 +29,10 @@ class Converter:
         # Get file content
         self.file = open(self.fullFile, "r").read()
     
-
     def convert(self, function, outputFileName="outputFile.txt", **kwargs):
+        if self.fullFile == self.dir + outputFileName:
+            raise Exception("The script is not intended to overwrite the inputFile")
+        
         output = function(content=self.file, **kwargs)
         self.write2file(fileName=outputFileName, content=output)
 
