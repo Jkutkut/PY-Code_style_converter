@@ -28,7 +28,7 @@ class Converter:
         
         # Get file content
         self.file = open(self.fullFile, "r").read()
-    
+
     def convert(self, function, outputFileName="outputFile.txt", **kwargs):
         print(f"---------------\nStarting conversion {function.__name__} of the file.\n")
         if self.fullFile == self.dir + outputFileName:
@@ -37,8 +37,6 @@ class Converter:
         output = function(content=self.file, **kwargs)
         self.write2file(fileName=outputFileName, content=output)
         print("\nConversion done\n---------------")
-
-
 
     def write2file(self, fileName, content):
         '''Writes the content to a file with the given name/location.'''
@@ -88,10 +86,10 @@ class JS_converter(Converter):
     intro = "/**\n * Code generated using Code style converter.\n * @author Jkutkut\n * @see https://github.com/Jkutkut/PY_Code-style-converter\n */\n\n"
 
     @classmethod
-    def normal2line(cls, inputFile):
+    def normal2line(cls, content):
         outputString = "" # The file will be stored here (output)
-        for r in inputFile.split("\n"): # For each row
-            r = re.sub(r'^ +', '', r) # Remove initial spacing
+        for r in content.split("\n"): # For each row
+            r = re.sub(r'^[ 	]+', '', r) # Remove initial spacing
             r = re.sub(r'//.+', '', r) # Remove one line comments
             outputString += r # Add it to the string
         
@@ -129,8 +127,8 @@ class JS_converter(Converter):
         return cls.prettier(outputString)
 
     @classmethod
-    def line2normal(cls, inputFile):
-        outputString = inputFile # The file will be stored here (output)
+    def line2normal(cls, content):
+        outputString = content # The file will be stored here (output)
 
         onString = False
         onParenthesis = 0
@@ -205,23 +203,23 @@ class JS_converter(Converter):
         return cls.prettier(outputString)
     
     @classmethod
-    def line2classic(cls, inputFile):
-        outputFileName = cls.line2normal(inputFile)
+    def line2classic(cls, content):
+        outputFileName = cls.line2normal(content)
         outputFileName = re.sub(r'(\t*)(.+[a-zA-Z0-9\)]) \{\n', '\\1\\2\n\\1{\n', outputFileName) # Place brackets the classic way
         return outputFileName
 
     @classmethod
-    def classic2normal(cls, inputFile):
-        outputFileName = re.sub(r'([a-zA-Z0-9\)]) *\n\t*{', '\\1 {', inputFile) # Place brackets the normal way
+    def classic2normal(cls, content):
+        outputFileName = re.sub(r'([a-zA-Z0-9\)]) *\n\t*{', '\\1 {', content) # Place brackets the normal way
         return outputFileName
 
     @classmethod
-    def classic2line(cls, inputFile):
-        return cls.normal2line(cls.classic2normal(inputFile))
+    def classic2line(cls, content):
+        return cls.normal2line(cls.classic2normal(content))
 
     # @classmethod
-    # def encry(cls, inputFile):
-    #     lines = inputFile.split("\n")
+    # def encry(cls, content):
+    #     lines = content.split("\n")
     #     for l in lines:
     #         if re.match(r'\t*(let|var|const) ([a-zA-Z0-9_]+)', ''):
     #             pass
@@ -277,9 +275,7 @@ class HTML_converter(Converter):
                             r = f"<script>{content}</script>"
                         else:
                             raise Exception(f"Extension '{extension}' not found for the file '{src}'.")
-                        print(f" - File inserted as {extension} link.\n")
-                        
-
+                        print(f" - File inserted as {extension} link.\n") 
 
             r = re.sub(r'^ +', '', r) # Remove initial spacing
             outputString += r # Add it to the string
@@ -308,8 +304,10 @@ if __name__ == '__main__':
 
     if extension == "html":
         c = HTML_converter
-    elif extension == "JS" or extension == "CSS":
+    elif extension == "js" or extension == "css":
         c = JS_converter
+    else:
+        raise Exception(f"There isn't any conversor (yet) for a .{extension} file.")
     
     conversor = c(inputFileName) # Create converter
     conversor.convert(conversor.normal2line, outputFileName=outputFileName) # Convert the file to the new file
