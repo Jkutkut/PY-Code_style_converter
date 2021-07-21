@@ -9,16 +9,42 @@ class Converter:
     intro = ""
 
     def __init__(self, fileName) -> None:
-        self.file = fileName
+        self.changeFile(fileName)
 
-        if "/" in fileName:
-            self.dir, self.fileName = re.compile('\/(?=[^\/]+$)').split(fileName)
+    def changeFile(self, newFileName) -> None:
+        '''Changes all the variables storing information of the inputFile in order to use the new one.'''
+
+        self.fullFile = newFileName # Complete name of the file (directory+name)
+        
+        # Store the directory and the file name on different variables
+        if "/" in self.file:
+            self.dir, self.fileName = re.compile('\/(?=[^\/]+$)').split(self.file)
             self.dir = self.dir + "/"
         else:
             self.dir = "./"
-            self.fileName = fileName
+            self.fileName = self.file
+        
+        print(f'New file loaded:\n - Dir:  {self.dir}\n - Name: {self.fileName}')
+        
+        # Get file content
+        self.file = open(self.fileName, "r").read()
+    
+    def write2file(self, fileName, content):
+        '''Writes the content to a file with the given name/location.'''
+        self.__class__.write2file(self.dir + fileName, content)
 
-        print(f'Dir: {self.dir}\nName: {self.fileName}')
+    # CLASSMETHODS
+    @classmethod
+    def write2file(cls, fileName, content):
+        '''Writes the content to a file with the given name/location.'''
+        outputFile = open(fileName, "w")
+        outputFile.write(cls.prettier(content)) # Save to file
+        outputFile.close()
+
+    @classmethod
+    def prettier(cls, file):
+        '''Adds the introduction to the file'''
+        return cls.intro + file
 
     @classmethod
     def randomNameGenerator(cls, type="minus"):
@@ -40,11 +66,6 @@ class Converter:
                 currentResult = nextOrder.__next__()
                 current = 0
             current += 1
-
-    @classmethod
-    def prettier(cls, file):
-        '''Adds the introduction to the file'''
-        return cls.intro + file
 
 
 class JS_converter(Converter):
@@ -240,30 +261,10 @@ class HTML_converter(Converter):
 if __name__ == '__main__':
     inputFileName = "testing/HTML/input/desktop.html" # Default inputFile name
     outputFileName = "testing/HTML/input/outputFile.html" # default output file
-    # outputFileName = "outputFile.js" # default output file
 
     if len(sys.argv) > 1:
         inputFileName = sys.argv[1]
         if len(sys.argv) > 2:
             outputFileName = sys.argv[2]
-
-    # inputFileString = open(inputFileName, "r").read()
-    # outputFile = open(outputFileName, "w")
-
-
-    # output = JS_converter().normal2line(inputFileString)
-    # output = JS_converter().line2normal(inputFileString)
-    # output = JS_converter().line2classic(inputFileString)
-    # output = JS_converter().classic2normal(inputFileString)
-    # output = JS_converter().encry(inputFileString)
-
-    # output = HTML_converter().normal2line(inputFileString)
-    conv = HTML_converter(inputFileName)
-    output = ""
-
-
-    # Debug
-    # outputFile.write(inputFileString); outputFile.write("\n\n//---------------------------------------------\n\n")
     
-    # outputFile.write(output) # Save to file
-    # outputFile.close()
+    conv = HTML_converter(inputFileName)
