@@ -24,7 +24,7 @@ class Converter:
             self.dir = "./"
             self.fileName = self.fullFile
         
-        print(f'New file loaded:\n - Dir:  {self.dir}\n - Name: {self.fileName}')
+        print(f'New file loaded:\n - Dir:  {self.dir}\n - Name: {self.fileName}\n')
         
         # Get file content
         self.file = open(self.fullFile, "r").read()
@@ -234,11 +234,11 @@ class HTML_converter(Converter):
 
     intro = "<!-- HTML generated using Code style converter.\n     @author Jkutkut\n     @see https://github.com/Jkutkut/PY_Code-style-converter -->\n\n"
 
-    def normal2line(self, content, localFiles=True, remoteFiles=False):
+    def normal2line(self, content, localFiles=True):
         outputString = ""
 
         for r in content.split("\n"): # For each row
-            if localFiles or remoteFiles: # If the script is going to replace JS or CSS links with the code
+            if localFiles: # If the script is going to replace JS or CSS links with the code
                 lineRegex = re.match(r' *<script .*?src="(.+?)"><\/script>', r) # See if JS file found
                 if lineRegex == None: # If JS file not found
                     lineRegex = re.match(r' *<link .*?href="(.+?)">', r) # See if CSS file found
@@ -247,27 +247,34 @@ class HTML_converter(Converter):
 
                     if not re.match(r'.+\.min\.[^\/\.]+', src): continue # If file is not a .min.EXTENSION file, skip this step (seems not to be a one-line file)
 
+                    extension = re.search(r'(?<=\.)[^.]+$', src).group() # Get extension of the file
+
                     if re.match(r'http.+', src) != None:
-                        if not remoteFiles: continue # If remoteFiles not changed, skip
-
                         # Keep in mind that all files without http begining will not be detected!
-                        print(f"remote file found: {src}")
-
-
-                    elif localFiles:
-                        print(f"local file found: {src}")
+                        print(f"Remote file found: {src}.\nIf you want the file to be replaced, download the file and make it local.\n")
+                    else:
+                        print(f"Local file found: {src}")
+                        
                         try:
                             f = open(self.dir + src, "r").read()
-                            lines = f.split("\n")
-                            content = lines[-1]
-
-                            if len(content) < len("\n".join(lines[0:-2])):
-                                print(" - The file is not one-line. Skiping this file")
-                                continue
-                            r = f"<style>{content}</style>"
-                            pass
                         except Exception:
-                            print("  -> not able to load the file")
+                            raise Exception(f"  -> not able to load the file '{self.dir + src}'")
+                        
+                        lines = f.split("\n")
+                        content = lines[-1]
+
+                        if len(content) < len("\n".join(lines[0:-2])):
+                            print(" - The file is not one-line. Skiping this file")
+                            continue
+
+                        if extension == "css":
+                            r = f"<style>{content}</style>"
+                        elif extension == "js":
+                            r = f"<script>{content}</script>"
+                        else:
+                            raise Exception(f"Extension '{extension}' not found for the file '{src}'.")
+                        print("\n")
+                        
 
 
             r = re.sub(r'^ +', '', r) # Remove initial spacing
@@ -292,17 +299,18 @@ if __name__ == '__main__':
     
     try:
         extension = re.search(r'(?<=\.)[^.]+$', inputFileName).group() # Extension of the file
-
-        if extension == "html":
-            c = HTML_converter
-        elif extension == "JS" or extension == "CSS":
-            c = JS_converter
-        
-        conversor = c(inputFileName) # Create converter
-        conversor.convert(conversor.normal2line, outputFileName=outputFileName) # Convert the file to the new file
-
     except Exception:
         print("The name of the file is not valid")
+
+    if extension == "html":
+        c = HTML_converter
+    elif extension == "JS" or extension == "CSS":
+        c = JS_converter
+    
+    conversor = c(inputFileName) # Create converter
+    conversor.convert(conversor.normal2line, outputFileName=outputFileName) # Convert the file to the new file
+
+    
     
 
 
