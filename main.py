@@ -8,6 +8,18 @@ class Converter:
 
     intro = ""
 
+    def __init__(self, fileName) -> None:
+        self.file = fileName
+
+        if "/" in fileName:
+            self.dir, self.fileName = re.compile('\/(?=[^\/]+$)').split(fileName)
+            self.dir = self.dir + "/"
+        else:
+            self.dir = "./"
+            self.fileName = fileName
+
+        print(f'Dir: {self.dir}\nName: {self.fileName}')
+
     @classmethod
     def randomNameGenerator(cls, type="minus"):
         '''
@@ -235,8 +247,8 @@ if __name__ == '__main__':
         if len(sys.argv) > 2:
             outputFileName = sys.argv[2]
 
-    inputFileString = open(inputFileName, "r").read()
-    outputFile = open(outputFileName, "w")
+    # inputFileString = open(inputFileName, "r").read()
+    # outputFile = open(outputFileName, "w")
 
 
     # output = JS_converter().normal2line(inputFileString)
@@ -245,10 +257,13 @@ if __name__ == '__main__':
     # output = JS_converter().classic2normal(inputFileString)
     # output = JS_converter().encry(inputFileString)
 
-    output = HTML_converter().normal2line(inputFileString)
+    # output = HTML_converter().normal2line(inputFileString)
+    conv = HTML_converter(inputFileName)
+    output = ""
+
 
     # Debug
     # outputFile.write(inputFileString); outputFile.write("\n\n//---------------------------------------------\n\n")
     
-    outputFile.write(output) # Save to file
-    outputFile.close()
+    # outputFile.write(output) # Save to file
+    # outputFile.close()
