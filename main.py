@@ -115,7 +115,7 @@ class JS_converter(Converter):
                         delta[0] -= 1
                         j -= 1
                     j = 1
-                    while index + j < len(outputString) and outputString[index + j] == " ": # spaces foward
+                    while index + j < len(outputString) and outputString[index + j] == " ": # spaces forward
                         delta[1] += 1
                         j += 1
                     outputString = outputString[:index + delta[0]] + l + outputString[index + delta[1]:] # remove spaces
@@ -232,12 +232,10 @@ class HTML_converter(Converter):
 
     intro = "<!-- HTML generated using Code style converter.\n     @author Jkutkut\n     @see https://github.com/Jkutkut/PY_Code-style-converter -->\n\n"
 
-    @classmethod
-    def normal2line(cls, inputFile, localFiles=True, remoteFiles=False):
+    def normal2line(self, content, localFiles=True, remoteFiles=False):
         outputString = ""
-        # fDir = re.sub(r'[^\/]+$', )
 
-        for r in inputFile.split("\n"): # For each row
+        for r in content.split("\n"): # For each row
             if localFiles or remoteFiles: # If the script is going to replace JS or CSS links with the code
                 lineRegex = re.match(r' *<script .*?src="(.+?)"><\/script>', r) # See if JS file found
                 if lineRegex == None: # If JS file not found
@@ -245,34 +243,61 @@ class HTML_converter(Converter):
                 if lineRegex != None:
                     src = lineRegex.group(1) # src link of the file
 
-                    if remoteFiles and re.match(r'http.+', src):
+                    if not re.match(r'.+\.min\.[^\/\.]+', src): continue # If file is not a .min.EXTENSION file, skip this step (seems not to be a one-line file)
+
+                    if re.match(r'http.+', src) != None:
+                        if not remoteFiles: continue # If remoteFiles not changed, skip
+
                         # Keep in mind that all files without http begining will not be detected!
                         print(f"remote file found: {src}")
+
+
                     elif localFiles:
                         print(f"local file found: {src}")
                         try:
-                            f = open(src, "r")
-                            print(f)
+                            f = open(self.dir + src, "r").read()
+                            lines = f.split("\n")
+                            content = lines[-1]
+
+                            if len(content) < len("\n".join(lines[0:-2])):
+                                print(" - The file is not one-line. Skiping this file")
+                                continue
+                            r = f"<style>{content}</style>"
                             pass
                         except Exception:
                             print("  -> not able to load the file")
-                            pass
 
 
             r = re.sub(r'^ +', '', r) # Remove initial spacing
             outputString += r # Add it to the string
 
         outputString = re.sub(r'<!--.+?-->', '', outputString) # Remove comments
-        return cls.prettier(outputString)
+        return outputString
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': # If executing directly this script, use the normal2line function
     inputFileName = "testing/HTML/input/desktop.html" # Default inputFile name
-    outputFileName = "testing/HTML/input/outputFile.html" # default output file
+    outputFileName = "../outputFileName.html" # default output file
 
     if len(sys.argv) > 1:
         inputFileName = sys.argv[1]
         if len(sys.argv) > 2:
             outputFileName = sys.argv[2]
     
-    conv = HTML_converter(inputFileName)
+    try:
+        extension = re.search(r'(?<=\.)[^.]+$', inputFileName).group()
+
+        if extension == "html":
+            c = HTML_converter
+        elif extension == "JS" or extension == "CSS":
+            c = JS_converter
+        
+        conversor = c(inputFileName)
+        conversor.convert(conversor.normal2line, outputFileName=outputFileName)
+
+    except Exception:
+        print("The name of the file is not valid")
+    
+
+
+    
