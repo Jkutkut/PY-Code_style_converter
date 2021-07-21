@@ -17,26 +17,34 @@ class Converter:
         self.fullFile = newFileName # Complete name of the file (directory+name)
         
         # Store the directory and the file name on different variables
-        if "/" in self.file:
-            self.dir, self.fileName = re.compile('\/(?=[^\/]+$)').split(self.file)
+        if "/" in self.fullFile:
+            self.dir, self.fileName = re.compile('\/(?=[^\/]+$)').split(self.fullFile)
             self.dir = self.dir + "/"
         else:
             self.dir = "./"
-            self.fileName = self.file
+            self.fileName = self.fullFile
         
         print(f'New file loaded:\n - Dir:  {self.dir}\n - Name: {self.fileName}')
         
         # Get file content
-        self.file = open(self.fileName, "r").read()
+        self.file = open(self.fullFile, "r").read()
     
+
+    def convert(self, function, outputFileName="outputFile.txt", **kwargs):
+        output = function(content=self.file, **kwargs)
+        self.write2file(fileName=outputFileName, content=output)
+
+
+
     def write2file(self, fileName, content):
         '''Writes the content to a file with the given name/location.'''
-        self.__class__.write2file(self.dir + fileName, content)
+        self.__class__.write2fileMethod(self.dir + fileName, content)
 
     # CLASSMETHODS
     @classmethod
-    def write2file(cls, fileName, content):
+    def write2fileMethod(cls, fileName, content):
         '''Writes the content to a file with the given name/location.'''
+        print(f"Writing content to {fileName}")
         outputFile = open(fileName, "w")
         outputFile.write(cls.prettier(content)) # Save to file
         outputFile.close()
