@@ -217,14 +217,46 @@ class JS_converter(Converter):
     def classic2line(cls, content):
         return cls.normal2line(cls.classic2normal(content))
 
-    # @classmethod
-    # def encry(cls, content):
-    #     lines = content.split("\n")
-    #     for l in lines:
-    #         if re.match(r'\t*(let|var|const) ([a-zA-Z0-9_]+)', ''):
-    #             pass
+    @classmethod
+    def encry(cls, content, tab="    "):
+        outputString = []
+        lines = content.split("\n")
 
-    #     return
+        names=cls.randomNameGenerator()
+
+        currentVars = []
+        
+        for i in range(len(lines)):
+            l = lines[i]
+            posVar = re.compile(f"(({tab})*)(let|var|const) ([a-zA-Z0-9_]+)").search(l)
+            if posVar != None:
+                depth = len(posVar.group(1)) // len(tab)
+
+                currentVars.append({
+                    "depth": depth,
+                    "type": posVar.group(3),
+                    "og": posVar.group(4),
+                    "new": names.__next__()
+                })
+
+            # depth = len(re.compile(f"^(({tab})*)").search(l).group(1)) // len(tab)
+            # print(f"{l} -> {depth}")
+            j = 0
+            while j < len(currentVars):
+                v = currentVars[j]
+                # if depth < v["depth"]: # If variable no longer in use
+                #     currentVars.pop(j)
+                #     continue # Do not increment
+
+                regEx = re.compile(f"(?<=[^\.\d\w]){v['og']}(?=[^\d\w])")
+                if regEx.search(l) != None:
+                    # print(f"{v['og']} found!\n'{l}'\n{v['og']} -> {v['new']}\n")
+                    l = regEx.sub(v['new'], l)
+
+                j = j + 1
+            
+            outputString.append(l)
+        return "\n".join(outputString)
     
 
 class HTML_converter(Converter):
