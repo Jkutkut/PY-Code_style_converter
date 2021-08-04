@@ -1,4 +1,4 @@
-# PY_Code-style-converter:
+# PY-Code_style_converter:
 
 This code changes the style of JS code, enabling automatic conversion.
 
