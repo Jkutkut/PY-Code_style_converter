@@ -321,13 +321,15 @@ class HTML_converter(Converter):
         index = 0
         tree = []
         while index < len(content): # for each character
-            char = content[index]; addTab = False
+            addTab = False
+            char = content[index]; index += 1
 
-            if char == "<": # If tag, get the id
-                id = ""; subindex = index + 1
-                while re.match(r'[ >]', content[subindex]) == None: # While the html tag id not ended
-                    id += content[subindex] # get the id
-                    subindex += 1
+            if char == "<": # If tag, get the id                
+                id = ""
+                while not re.match(r'[ >]', content[index]): # While the html tag id not ended
+                    id += content[index] # get the id
+                    index += 1
+                char += id # Add also the id
 
                 if re.match(r'^/', id): # If the id is from an ending tag
                     i = len(tree) - 1
@@ -350,7 +352,6 @@ class HTML_converter(Converter):
                 char = f"\n{tabs}{char}" if addTab else f"{char}\n{tabs}"
 
             outputString += char
-            index += 1
         
         # Final processing:
         outputString = re.sub(r'\t+\n', '', outputString)
