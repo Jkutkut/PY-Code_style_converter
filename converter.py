@@ -323,7 +323,7 @@ class HTML_converter(Converter):
         while index < len(content): # for each character
             char = content[index]; addTab = False
 
-            if char == "<":
+            if char == "<": # If tag, get the id
                 id = ""; subindex = index + 1
                 while re.match(r'[ >]', content[subindex]) == None: # While the html tag id not ended
                     id += content[subindex] # get the id
@@ -334,24 +334,22 @@ class HTML_converter(Converter):
                     while i > 0: # for each element in tree (starting from the back)
                         if id == f"/{tree[i]}": # if id found
                             for _ in range(i, len(tree)): # Remove all tags inside the tag (and the tag)
-                                tree.pop()
+                                tree.pop() # to prevent errors with '<TAG MODIFIERS>'
                             break
                         i -= 1
                     
                     addTab = True # This tag will start on a new line with correct spacing
                 else: # If starting a new tag
-                    if not re.match(r'meta|link|img', id):
-                        tree.append(id)
+                    tags2ignore = r'meta|link|img' # tags with '<TAG MODIFIERS*>' format
+                    if not re.match(tags2ignore, id):
+                        tree.append(id) # Only add tags with format '<TAG MODIFIERS*>CONTENT*</TAG>'
 
-            if char == ">":
-                tabs = ''.join(['\t' for _ in range(len(tree))])
-                outputString += f"{char}\n{tabs}"
-            elif addTab:
-                tabs = ''.join(['\t' for _ in range(len(tree))])
-                outputString += f"\n{tabs}{char}"
-            else:
-                outputString += char
             
+            if char == ">" or addTab: # if true, change the char to a collection of spacings + the character
+                tabs = ''.join(['\t' for _ in range(len(tree))])
+                char = f"\n{tabs}{char}" if addTab else f"{char}\n{tabs}"
+
+            outputString += char
             index += 1
         
         # Final processing:
