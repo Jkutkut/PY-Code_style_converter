@@ -315,14 +315,58 @@ class HTML_converter(Converter):
         outputString = re.sub(r'<!--.+?-->', '', outputString) # Remove comments
         return outputString
 
+    def line2normal(self, content):
+        outputString = ""
+        
+        index = 0
+        tree = []
+        while index < len(content):
+            char = content[index]; addTab = False
+
+            if char == "<":
+                id = ""; subindex = index + 1
+
+                while re.match(r'[ >]', content[subindex]) == None: # While the html tag id not ended
+                    id += content[subindex]
+                    subindex += 1
+
+                if re.match(r'^/', id):
+                    i = len(tree) - 1
+                    while i > 0:
+                        if id == f"/{tree[i]}": # if id found on tree
+                            for _ in range(i, len(tree)):
+                                tree.pop()
+                            break
+                        i -= 1
+                    
+                    addTab = True
+                else:                    
+                    if not re.match(r'meta|link|img', id):
+                        tree.append(id)
+
+            if char == ">":
+                tabs = ''.join(['\t' for _ in range(len(tree))])
+                outputString += f"{char}\n{tabs}"
+            elif addTab:
+                tabs = ''.join(['\t' for _ in range(len(tree))])
+                outputString += f"\n{tabs}{char}"
+            else:
+                outputString += char
+            
+            index += 1
+        
+
+        # Final processing:
+        outputString = re.sub(r'\t+\n', '', outputString)
+        return outputString
 
 if __name__ == '__main__':
     '''
     If executing directly this script, use the normal2line function with the given file
     '''
 
-    inputFileName = "testing/HTML/input/desktop.html" # Default inputFile name
-    outputFileName = "../outputFileName.html" # default output file
+    inputFileName = "testing/HTML/mainMenu_oneLine.html" # Default inputFile name
+    outputFileName = "./outputFileName.html" # default output file
 
     if len(sys.argv) > 1: # If more than 1 argument -> 1º is inputFileName
         inputFileName = sys.argv[1]
@@ -342,7 +386,8 @@ if __name__ == '__main__':
         raise Exception(f"There isn't any conversor (yet) for a .{extension} file.")
     
     conversor = c(inputFileName) # Create converter
-    conversor.convert(conversor.normal2line, outputFileName=outputFileName) # Convert the file to the new file
+    # conversor.convert(conversor.normal2line, outputFileName=outputFileName, localFiles=False) # Convert the file to the new file
+    conversor.convert(conversor.line2normal, outputFileName=outputFileName) # Convert the file to the new file
 
     
     
