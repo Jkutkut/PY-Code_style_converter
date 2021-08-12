@@ -320,27 +320,26 @@ class HTML_converter(Converter):
         
         index = 0
         tree = []
-        while index < len(content):
+        while index < len(content): # for each character
             char = content[index]; addTab = False
 
             if char == "<":
                 id = ""; subindex = index + 1
-
                 while re.match(r'[ >]', content[subindex]) == None: # While the html tag id not ended
-                    id += content[subindex]
+                    id += content[subindex] # get the id
                     subindex += 1
 
-                if re.match(r'^/', id):
+                if re.match(r'^/', id): # If the id is from an ending tag
                     i = len(tree) - 1
-                    while i > 0:
-                        if id == f"/{tree[i]}": # if id found on tree
-                            for _ in range(i, len(tree)):
+                    while i > 0: # for each element in tree (starting from the back)
+                        if id == f"/{tree[i]}": # if id found
+                            for _ in range(i, len(tree)): # Remove all tags inside the tag (and the tag)
                                 tree.pop()
                             break
                         i -= 1
                     
-                    addTab = True
-                else:                    
+                    addTab = True # This tag will start on a new line with correct spacing
+                else: # If starting a new tag
                     if not re.match(r'meta|link|img', id):
                         tree.append(id)
 
@@ -355,9 +354,9 @@ class HTML_converter(Converter):
             
             index += 1
         
-
         # Final processing:
         outputString = re.sub(r'\t+\n', '', outputString)
+        
         return outputString
 
 if __name__ == '__main__':
