@@ -358,13 +358,36 @@ class HTML_converter(Converter):
         
         return outputString
 
+
+class PY_converter(Converter):
+    '''
+    Class to change style of Python3 files.
+    '''
+
+    intro = "'''\n     Python3 file generated using Code style converter.\n     @author Jkutkut\n     @see https://github.com/Jkutkut/PY_Code-style-converter\n'''\n\n"
+
+    def normal2line(self, content):
+        outputString = ""
+
+        # content = re.sub(r'#.+?\n', '\n', content)
+        
+        # for r in content.split("\n"): # For each row
+        #     outputString += r + "\n"
+
+        string = False
+        i = 0
+        while i < len(content):
+            print(i)
+            i += 1
+        return outputString
+
 if __name__ == '__main__':
     '''
     If executing directly this script, use the normal2line function with the given file
     '''
 
-    inputFileName = "testing/HTML/mainMenu_oneLine.html" # Default inputFile name
-    outputFileName = "./outputFileName.html" # default output file
+    inputFileName = "./converter.py" # Default inputFile name
+    outputFileName = "./outputFileName.py" # default output file
 
     if len(sys.argv) > 1: # If more than 1 argument -> 1º is inputFileName
         inputFileName = sys.argv[1]
@@ -380,12 +403,14 @@ if __name__ == '__main__':
         c = HTML_converter
     elif extension == "js" or extension == "css":
         c = JS_converter
+    elif extension == "py":
+        c = PY_converter
     else:
         raise Exception(f"There isn't any conversor (yet) for a .{extension} file.")
     
     conversor = c(inputFileName) # Create converter
-    # conversor.convert(conversor.normal2line, outputFileName=outputFileName, localFiles=False) # Convert the file to the new file
-    conversor.convert(conversor.line2normal, outputFileName=outputFileName) # Convert the file to the new file
+    conversor.convert(conversor.normal2line, outputFileName=outputFileName) # Convert the file to the new file
+    # conversor.convert(conversor.line2normal, outputFileName=outputFileName) # Convert the file to the new file
 
     
     
