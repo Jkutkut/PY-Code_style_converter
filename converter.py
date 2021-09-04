@@ -364,20 +364,34 @@ class PY_converter(Converter):
     Class to change style of Python3 files.
     '''
 
-    intro = "'''\n     Python3 file generated using Code style converter.\n     @author Jkutkut\n     @see https://github.com/Jkutkut/PY_Code-style-converter\n'''\n\n"
+    intro = "'''\n    Python3 file generated using Code style converter.\n    @author Jkutkut\n    @see https://github.com/Jkutkut/PY_Code-style-converter\n'''\n\n"
 
-    def normal2line(self, content):
+    def normal2line(self, content) -> str:
         outputString = ""
 
-        # content = re.sub(r'#.+?\n', '\n', content)
-        
-        # for r in content.split("\n"): # For each row
-        #     outputString += r + "\n"
-
-        string = False
+        onString = False
         i = 0
         while i < len(content):
-            print(i)
+            c = content[i]
+            if re.match(r'[\'`"]', c) != None: # If potential string start or end found
+                if onString != False:
+                    prevWasSlash = content[i - 1] == "\\" and (i < 2 or content[i - 2] != "\\")
+                    if c == onString and not prevWasSlash: # If same char found that opened the string not followed by "\"
+                        onString = False
+                        print("End of string")
+                else:
+                    onString = c # Now we are on a string starting with this character
+                    print(f"Start of string with '{onString}'")
+            
+            elif c == "#" and onString == False:
+                st = ""
+                while c != "\n":
+                    st += c # debug
+                    i += 1
+                    c = content[i]
+                print(f"{st}")
+
+            outputString += c
             i += 1
         return outputString
 
@@ -386,6 +400,7 @@ if __name__ == '__main__':
     If executing directly this script, use the normal2line function with the given file
     '''
 
+    # inputFileName = "./textFile.py" # Default inputFile name
     inputFileName = "./converter.py" # Default inputFile name
     outputFileName = "./outputFileName.py" # default output file
 
