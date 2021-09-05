@@ -367,6 +367,7 @@ class PY_converter(Converter):
     intro = "'''\n    Python3 file generated using Code style converter.\n    @author Jkutkut\n    @see https://github.com/Jkutkut/PY_Code-style-converter\n'''\n\n"
 
     def normal2line(self, content) -> str:
+        '''Reduces the overall size of the file by removing not esencial spaces, comments and documentation. Due to the nature of Python, the output not allways will be a strict line.'''
         outputString = ""
 
         # Character analysis
@@ -381,7 +382,6 @@ class PY_converter(Converter):
                         onString = False
                 else:
                     onString = c # Now we are on a string starting with this character
-            
             elif c == "#" and onString == False:
                 while c != "\n":
                     i += 1
@@ -396,26 +396,21 @@ class PY_converter(Converter):
         i = 0
         while i < len(lines):
             l = lines[i]
-            
             if re.match(r'^[ 	\t]*$', l): # If empty line, remove it
                 i += 1
                 continue
             elif re.match(r'^[ 	\t]*\'\'\'', l):
-                # print("comment found")
                 j = 0; startReached = False
                 while True:
                     if len(l) < j + 2: # If multiline comment and the current line-end reached
                         i += 1
-                        l += lines[i] # add the next one
-                        # print("line added")
+                        l += lines[i] # Add the next one
 
                     if l[j:j+3] == "'''":
                         if startReached:
                             j += 2
-                            # print(f"Comment deleted:\n{l}")
                             break
                         else:
-                            # print(f"Start of string at index {j}")
                             startReached = True
                     j += 1
                 i += 1
