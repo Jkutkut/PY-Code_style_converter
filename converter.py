@@ -400,6 +400,26 @@ class PY_converter(Converter):
             if re.match(r'^[ 	\t]*$', l): # If empty line, remove it
                 i += 1
                 continue
+            elif re.match(r'^[ 	\t]*\'\'\'', l):
+                # print("comment found")
+                j = 0; startReached = False
+                while True:
+                    if len(l) < j + 2: # If multiline comment and the current line-end reached
+                        i += 1
+                        l += lines[i] # add the next one
+                        # print("line added")
+
+                    if l[j:j+3] == "'''":
+                        if startReached:
+                            j += 2
+                            print(f"Comment deleted:\n{l}")
+                            break
+                        else:
+                            # print(f"Start of string at index {j}")
+                            startReached = True
+                    j += 1
+                i += 1
+                continue
             outputString += l + "\n"
             i += 1
         return outputString
