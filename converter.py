@@ -369,6 +369,7 @@ class PY_converter(Converter):
     def normal2line(self, content) -> str:
         outputString = ""
 
+        # Character analysis
         onString = False
         i = 0
         while i < len(content):
@@ -378,20 +379,28 @@ class PY_converter(Converter):
                     prevWasSlash = content[i - 1] == "\\" and (i < 2 or content[i - 2] != "\\")
                     if c == onString and not prevWasSlash: # If same char found that opened the string not followed by "\"
                         onString = False
-                        print("End of string")
                 else:
                     onString = c # Now we are on a string starting with this character
-                    print(f"Start of string with '{onString}'")
             
             elif c == "#" and onString == False:
-                st = ""
                 while c != "\n":
-                    st += c # debug
                     i += 1
                     c = content[i]
-                print(f"{st}")
 
             outputString += c
+            i += 1
+
+        # Line analysis
+        lines = outputString.split("\n")
+        outputString = ""
+        i = 0
+        while i < len(lines):
+            l = lines[i]
+            
+            if re.match(r'^[ 	\t]*$', l): # If empty line, remove it
+                i += 1
+                continue
+            outputString += l + "\n"
             i += 1
         return outputString
 
