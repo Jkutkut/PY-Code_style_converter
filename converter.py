@@ -412,7 +412,7 @@ class PY_converter(Converter):
                     if l[j:j+3] == "'''":
                         if startReached:
                             j += 2
-                            print(f"Comment deleted:\n{l}")
+                            # print(f"Comment deleted:\n{l}")
                             break
                         else:
                             # print(f"Start of string at index {j}")
