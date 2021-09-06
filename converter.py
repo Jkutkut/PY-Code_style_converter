@@ -463,13 +463,39 @@ class PY_converter(Converter):
             i += 1
 
         return references
+    
+    def asLibrary(self, content):
+        '''Removes all references to files and the logic executed if main.'''
+        outputString = ""
+
+        content = self.normal2line(content)
+
+        lines = content.split("\n")
+        i = 0
+
+        while i < len(lines):
+            l = lines[i]
+            if re.match(r'^from [a-zA-Z0-9\.]+ import', l): # if reference to other file found
+                continue
+            if re.match(r'^if ((["\'])__main__\2|__name__) *== *((["\'])__main__\4|__name__):', l):
+                while i < len(lines):
+                    i += 1
+                    l = lines[i]
+                    if not re.match(r'[ \t]', l):
+                        break
+            outputString += l + "\n"
+            i += 1
+
+        return outputString
 
     def mergeFile(self, content) -> str:
         outputString = ""
         refs = self.getReferences(content)
         print(*refs, sep="\n")
 
-        outputString = self.normal2line(content)
+
+
+        # outputString = self.normal2line(content)
         return outputString
 
 if __name__ == '__main__':
@@ -477,8 +503,8 @@ if __name__ == '__main__':
     If executing directly this script, use the normal2line function with the given file
     '''
 
-    inputFileName = "./test/main.py" # Default inputFile name
-    # inputFileName = "./converter.py" # Default inputFile name
+    # inputFileName = "./test/main.py" # Default inputFile name
+    inputFileName = "./converter.py" # Default inputFile name
     outputFileName = "./outputFileName.py" # default output file
 
     if len(sys.argv) > 1: # If more than 1 argument -> 1º is inputFileName
@@ -502,7 +528,8 @@ if __name__ == '__main__':
     
     conversor = c(inputFileName) # Create converter
     # conversor.convert(conversor.normal2line, outputFileName=outputFileName) # Convert the file to the new file
-    conversor.convert(conversor.mergeFile, outputFileName=outputFileName) # Convert the file to the new file
+    # conversor.convert(conversor.mergeFile, outputFileName=outputFileName) # Convert the file to the new file
+    conversor.convert(conversor.asLibrary, outputFileName=outputFileName) # Convert the file to the new file
 
     
     
