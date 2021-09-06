@@ -419,13 +419,66 @@ class PY_converter(Converter):
             i += 1
         return outputString
 
+    def getFileReferences(self, content) -> str:
+        '''Returns a list with all the files imported into the file (all files using the syntax "from DIR.FILE import XXX")'''
+        files = []
+        lines = content.split("\n")
+        for l in lines:
+            # print(l)
+            regex = re.match(r'^(import)|^(from) ([A-Za-z0-9\.]+) import ([a-zA-Z0-9, \*]+)', l)
+            if regex == None:
+                if re.match(r'[ \t]*#', l):
+                    continue
+                break
+            
+            if regex.group(2) == "from":
+                dir = re.sub(r'\.', "/", regex.group(3))
+                fileName = f"{self.dir}{dir}.py"
+                files.append(fileName)
+                # print(f"=>'{fileName}'")
+
+        return files
+
+    def getReferences(self, content) -> str:
+        '''Returns a list with all the references to files in the given file. This logic will get all references recursively, taking also the references of the files already referenced.'''    
+        references = self.getFileReferences(content)
+        i = 0
+        while i < len(references):
+            fileName = references[i]
+            newRef = []
+            try:
+                f = open(fileName).read()
+                newRef = self.getFileReferences(f)
+            except IOError:
+                print(f"Not able to open the file: {fileName}")
+            
+            for posR in newRef:
+                notInArr = True
+                for r in references:
+                    if r == posR:
+                        notInArr = False
+                        break
+                if notInArr:
+                    references.append(posR)
+            i += 1
+
+        return references
+
+    def mergeFile(self, content) -> str:
+        outputString = ""
+        refs = self.getReferences(content)
+        print(*refs, sep="\n")
+
+        outputString = self.normal2line(content)
+        return outputString
+
 if __name__ == '__main__':
     '''
     If executing directly this script, use the normal2line function with the given file
     '''
 
-    # inputFileName = "./textFile.py" # Default inputFile name
-    inputFileName = "./converter.py" # Default inputFile name
+    inputFileName = "./test/main.py" # Default inputFile name
+    # inputFileName = "./converter.py" # Default inputFile name
     outputFileName = "./outputFileName.py" # default output file
 
     if len(sys.argv) > 1: # If more than 1 argument -> 1º is inputFileName
@@ -448,8 +501,8 @@ if __name__ == '__main__':
         raise Exception(f"There isn't any conversor (yet) for a .{extension} file.")
     
     conversor = c(inputFileName) # Create converter
-    conversor.convert(conversor.normal2line, outputFileName=outputFileName) # Convert the file to the new file
-    # conversor.convert(conversor.line2normal, outputFileName=outputFileName) # Convert the file to the new file
+    # conversor.convert(conversor.normal2line, outputFileName=outputFileName) # Convert the file to the new file
+    conversor.convert(conversor.mergeFile, outputFileName=outputFileName) # Convert the file to the new file
 
     
     
