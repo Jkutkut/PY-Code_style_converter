@@ -383,9 +383,9 @@ class PY_converter(Converter):
                 else:
                     onString = c # Now we are on a string starting with this character
             elif c == "#" and onString == False:
-                while c != "\n":
-                    i += 1
+                while c != "\n" and i < len(content):
                     c = content[i]
+                    i += 1
 
             outputString += c
             i += 1
@@ -467,12 +467,8 @@ class PY_converter(Converter):
     def asLibrary(self, content):
         '''Removes all references to files and the logic executed if main.'''
         outputString = ""
-
         content = self.normal2line(content)
-
-        lines = content.split("\n")
-        i = 0
-
+        lines = content.split("\n"); i = 0
         while i < len(lines):
             l = lines[i]
             if re.match(r'^from [a-zA-Z0-9\.]+ import', l): # if reference to other file found
@@ -485,17 +481,43 @@ class PY_converter(Converter):
                         break
             outputString += l + "\n"
             i += 1
-
         return outputString
 
     def mergeFile(self, content) -> str:
         outputString = ""
         refs = self.getReferences(content)
-        print(*refs, sep="\n")
+        # print(*refs, sep="\n")
+        
+        # load files
+        files = []
+        for f in refs:
+            try:
+                print(f)
+                file = open(f).read()
+                files.append(self.asLibrary(file))
+            except IOError:
+                print(f"Not able to read the file: {f}")
 
+        lines = content.split("\n")
+        i = 0
+        while i < len(lines):
+            l = lines[i]
+            checks = [
+                re.match(r'^(import)|^(from) ([A-Za-z0-9\.]+) import ([a-zA-Z0-9, \*]+)', l),
+                re.match(r'[ \t]*#', l),
+                re.match(r'^[ \t]*$', l)
+            ]
+            if all([c == None for c in checks]):
+                break
+            print("line")
+            i += 1
 
-
-        # outputString = self.normal2line(content)
+        # Create the final file
+        outputString = "\n\n\n".join(files)
+        content = self.normal2line("\n".join(lines[i:]))
+        outputString += content
+        
+        
         return outputString
 
 if __name__ == '__main__':
@@ -503,8 +525,8 @@ if __name__ == '__main__':
     If executing directly this script, use the normal2line function with the given file
     '''
 
-    # inputFileName = "./test/main.py" # Default inputFile name
-    inputFileName = "./converter.py" # Default inputFile name
+    inputFileName = "./test/main.py" # Default inputFile name
+    # inputFileName = "./converter.py" # Default inputFile name
     outputFileName = "./outputFileName.py" # default output file
 
     if len(sys.argv) > 1: # If more than 1 argument -> 1º is inputFileName
@@ -528,8 +550,8 @@ if __name__ == '__main__':
     
     conversor = c(inputFileName) # Create converter
     # conversor.convert(conversor.normal2line, outputFileName=outputFileName) # Convert the file to the new file
-    # conversor.convert(conversor.mergeFile, outputFileName=outputFileName) # Convert the file to the new file
-    conversor.convert(conversor.asLibrary, outputFileName=outputFileName) # Convert the file to the new file
+    conversor.convert(conversor.mergeFile, outputFileName=outputFileName) # Convert the file to the new file
+    # conversor.convert(conversor.asLibrary, outputFileName=outputFileName) # Convert the file to the new file
 
     
     
