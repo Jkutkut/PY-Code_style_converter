@@ -1,5 +1,6 @@
 import sys # to handle arguments
 import re # Regular expresions
+from deprecated import deprecated;
 
 class Converter:
     '''
@@ -464,6 +465,7 @@ class PY_converter(Converter):
 
         return references
     
+    @deprecated("This method just removes the import's statements and uses the normal2line logic with the rest of the code")
     def asLibrary(self, content):
         '''Removes all references to files and the logic executed if main.'''
         outputString = ""
@@ -483,6 +485,7 @@ class PY_converter(Converter):
             i += 1
         return outputString
 
+    @deprecated("this method was a failed idea.")
     def mergeFile(self, content) -> str:
         outputString = ""
         refs = self.getReferences(content)
@@ -525,8 +528,7 @@ if __name__ == '__main__':
     If executing directly this script, use the normal2line function with the given file
     '''
 
-    inputFileName = "./test/main.py" # Default inputFile name
-    # inputFileName = "./converter.py" # Default inputFile name
+    inputFileName = "./converter.py" # Default inputFile name
     outputFileName = "./outputFileName.py" # default output file
 
     if len(sys.argv) > 1: # If more than 1 argument -> 1º is inputFileName
